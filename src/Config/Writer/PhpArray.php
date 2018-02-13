@@ -43,7 +43,7 @@ class PhpArray
         $explodeFileName = explode('/', $filename);
         unset($explodeFileName[count($explodeFileName) - 1]);
         $explodeFileName[] = 'autoload';
-        $explodeFileName[] = 'splitted';
+        $explodeFileName[] = 'apigility-split-config';
         $explodeFileName[] = $splitKey . '.config.php';
         $splittedFileName = implode('/', $explodeFileName);
 
@@ -93,7 +93,7 @@ class PhpArray
      */
     protected function setZfVersioning($routeKey, &$services)
     {
-        $services[$routeKey]['zf-versioning']['uri'] = $routeKey;
+        $services[$routeKey]['zf-versioning']['uri'] = [$routeKey=>$routeKey];
 
         return $services;
     }

@@ -11,6 +11,8 @@
 
 namespace ApigilitySplitConfig\Config;
 
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\ZendConfigProvider;
 use Zend\Stdlib\ArrayUtils;
 use ZF\Configuration\ConfigResource;
 
@@ -29,26 +31,34 @@ class ResourceFactory
         $config = include $moduleConfigPath;
         $this->mergeAutoloadConfig($config, $moduleConfigPath);
         $this->resources[$moduleName] = new ConfigResource($config, $moduleConfigPath, $this->writer);
-
         return $this->resources[$moduleName];
 
     }
 
     protected function mergeAutoloadConfig(&$config, $moduleConfigPath)
     {
-        if (is_dir(dirname($moduleConfigPath) . '/autoload')) {
-            $Directory = new \RecursiveDirectoryIterator(dirname($moduleConfigPath) . '/autoload');
-            $Iterator = new \RecursiveIteratorIterator($Directory);
-            $Regex = new \RegexIterator($Iterator, '#^.+\/autoload/.+(rest|rpc|api).+config\.php$#i',
-                                        \RecursiveRegexIterator::GET_MATCH);
-            $autoloadConfig = [];
-            foreach ($Regex as $file) {
-                $fileConfig = include $file[0];
-                $autoloadConfig = ArrayUtils::merge($autoloadConfig, $fileConfig, true);
-            }
-            $config = ArrayUtils::merge($config, $autoloadConfig, true);
 
-        }
-
+        $aggregator = new ConfigAggregator(
+            [
+                new ZendConfigProvider(__DIR__ .
+                                       '/config/autoload/apigility-split-config/*.config.php'),
+                new ZendConfigProvider(__DIR__ .
+                                       '/config/autoload/apigility-split-config/**/*.config.php'),
+            ]);
+        $autoloadConfig = $aggregator->getMergedConfig();
+        $config = ArrayUtils::merge($config, $autoloadConfig, true);
+//        if (is_dir(dirname($moduleConfigPath) . '/autoload')) {
+//            $Directory = new \RecursiveDirectoryIterator(dirname($moduleConfigPath) . '/autoload');
+//            $Iterator = new \RecursiveIteratorIterator($Directory);
+//            $Regex = new \RegexIterator($Iterator, '#^.+\/autoload/.+(rest|rpc|api).+config\.php$#i',
+//                                        \RecursiveRegexIterator::GET_MATCH);
+//            $autoloadConfig = [];
+//            foreach ($Regex as $file) {
+//                $fileConfig = include $file[0];
+//                $autoloadConfig = ArrayUtils::merge($autoloadConfig, $fileConfig, true);
+//            }
+//            $config = ArrayUtils::merge($config, $autoloadConfig, true);
+//
+//        }
     }
 }

@@ -71,35 +71,46 @@ class ResourceFactory
      */
     protected function normalizeZfVersioning(&$config)
     {
-        foreach ($config['zf-versioning']['uri'] as $key => $service) {
-            if ($key === $service) {
-                continue;
+        if (!empty($config['zf-versioning']['uri'])) {
+            foreach ($config['zf-versioning']['uri'] as $key => $service) {
+                if ($key === $service) {
+                    continue;
+                }
+                $config['zf-versioning']['uri'][$service] = $service;
+                unset($config['zf-versioning']['uri'][$key]);
             }
-            $config['zf-versioning']['uri'][$service] = $service;
-            unset($config['zf-versioning']['uri'][$key]);
         }
 
     }
 
     /**
+     * array with unique values
+     *
      * @param $config
      */
     protected function normalizeRestIndexedArray(&$config)
     {
-        foreach ($config['zf-rest'] as $controller => $controllerConfig) {
-            $controllerConfig['entity_http_methods'] = array_unique($controllerConfig['entity_http_methods']);
-            $controllerConfig['collection_http_methods'] = array_unique($controllerConfig['collection_http_methods']);
-            $controllerConfig['collection_query_whitelist'] = array_unique($controllerConfig['collection_query_whitelist']);
-            $config['zf-rest'][$controller] = $controllerConfig;
+        if (!empty($config['zf-rest'])) {
+            foreach ($config['zf-rest'] as $controller => $controllerConfig) {
+                $controllerConfig['entity_http_methods'] = array_unique($controllerConfig['entity_http_methods']);
+                $controllerConfig['collection_http_methods'] =
+                    array_unique($controllerConfig['collection_http_methods']);
+                $controllerConfig['collection_query_whitelist'] =
+                    array_unique($controllerConfig['collection_query_whitelist']);
+                $config['zf-rest'][$controller] = $controllerConfig;
+            }
         }
-
-        foreach ($config['zf-content-negotiation']['accept_whitelist'] as $controller => $controllerConfig) {
-            $controllerConfig = array_unique($controllerConfig);
-            $config['zf-content-negotiation']['accept_whitelist'][$controller] = $controllerConfig;
+        if (!empty($config['zf-content-negotiation']['accept_whitelist'])) {
+            foreach ($config['zf-content-negotiation']['accept_whitelist'] as $controller => $controllerConfig) {
+                $controllerConfig = array_unique($controllerConfig);
+                $config['zf-content-negotiation']['accept_whitelist'][$controller] = $controllerConfig;
+            }
         }
-        foreach ($config['zf-content-negotiation']['content_type_whitelist'] as $controller => $controllerConfig) {
-            $controllerConfig = array_unique($controllerConfig);
-            $config['zf-content-negotiation']['content_type_whitelist'][$controller] = $controllerConfig;
+        if (!empty($config['zf-content-negotiation']['content_type_whitelist'])) {
+            foreach ($config['zf-content-negotiation']['content_type_whitelist'] as $controller => $controllerConfig) {
+                $controllerConfig = array_unique($controllerConfig);
+                $config['zf-content-negotiation']['content_type_whitelist'][$controller] = $controllerConfig;
+            }
         }
 
     }

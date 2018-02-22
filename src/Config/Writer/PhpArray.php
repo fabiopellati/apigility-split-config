@@ -19,8 +19,6 @@ class PhpArray
 
     public function toFile($filename, $config, $exclusiveLock = true)
     {
-
-
         parent::toFile($filename, $config, $exclusiveLock);
         $splitServices = $this->splitServices($config, $filename);
         foreach ($splitServices as $splitKey => $splitService) {
@@ -48,6 +46,7 @@ class PhpArray
         $explodeFileName[] = $splitKey . '.config.php';
         $splittedFileName = implode('/', $explodeFileName);
 
+
         return $splittedFileName;
     }
 
@@ -66,6 +65,7 @@ class PhpArray
             ? []
             : $config['router']['routes'];
         foreach ($routes as $routeKey => $route) {
+
             $services[$routeKey]['router']['routes'][$routeKey] = $route;
             $this->setZfVersioning($routeKey, $services);
             $controller = $route['options']['defaults']['controller'];
@@ -85,6 +85,7 @@ class PhpArray
         return $services;
 
     }
+
 
     /**
      * @param $routeKey

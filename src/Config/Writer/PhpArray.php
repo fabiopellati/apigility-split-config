@@ -20,6 +20,7 @@ class PhpArray
     public function toFile($filename, $config, $exclusiveLock = true)
     {
 
+
         parent::toFile($filename, $config, $exclusiveLock);
         $splitServices = $this->splitServices($config, $filename);
         foreach ($splitServices as $splitKey => $splitService) {
@@ -93,7 +94,15 @@ class PhpArray
      */
     protected function setZfVersioning($routeKey, &$services)
     {
-        $services[$routeKey]['zf-versioning']['uri'] = [$routeKey=>$routeKey];
+        if (!empty($services[$routeKey]['zf-versioning']['uri'])) {
+            foreach ($services[$routeKey]['zf-versioning']['uri'] as $key => $service) {
+                if ($key != $service) {
+                    $services[$routeKey]['zf-versioning']['uri'] = [$service => $service];
+                    unset($services[$routeKey]['zf-versioning']['uri'][$key]);
+                }
+            }
+        }
+        $services[$routeKey]['zf-versioning']['uri'][$routeKey] = $routeKey;
 
         return $services;
     }
@@ -137,6 +146,7 @@ class PhpArray
      */
     protected function setZfRest($config, $controller, &$services, $routeKey)
     {
+
         $entities = [];
         $collections = [];
         $serviceNames = [];

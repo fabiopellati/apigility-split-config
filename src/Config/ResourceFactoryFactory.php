@@ -25,8 +25,6 @@ class ResourceFactoryFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-
-
         return new ResourceFactory(
             $container->get(ModuleUtils::class),
             $container->get('ZF\\Configuration\\ConfigWriter')

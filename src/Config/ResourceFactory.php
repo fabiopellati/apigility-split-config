@@ -63,6 +63,7 @@ class ResourceFactory
     {
         $this->normalizeZfVersioning($config);
         $this->normalizeRestIndexedArray($config);
+        $this->normalizeRpcIndexedArray($config);
 
     }
 
@@ -110,6 +111,23 @@ class ResourceFactory
             foreach ($config['zf-content-negotiation']['content_type_whitelist'] as $controller => $controllerConfig) {
                 $controllerConfig = array_unique($controllerConfig);
                 $config['zf-content-negotiation']['content_type_whitelist'][$controller] = $controllerConfig;
+            }
+        }
+
+    }
+
+    /**
+     * array with unique values
+     *
+     * @param $config
+     */
+    protected function normalizeRpcIndexedArray(&$config)
+    {
+
+        if (!empty($config['zf-rpc'])) {
+            foreach ($config['zf-rpc'] as $controller => $controllerConfig) {
+                $controllerConfig['http_methods'] = array_unique($controllerConfig['http_methods']);
+                $config['zf-rpc'][$controller] = $controllerConfig;
             }
         }
 

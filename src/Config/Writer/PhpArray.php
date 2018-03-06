@@ -46,7 +46,6 @@ class PhpArray
         $explodeFileName[] = $splitKey . '.config.php';
         $splittedFileName = implode('/', $explodeFileName);
 
-
         return $splittedFileName;
     }
 
@@ -85,7 +84,6 @@ class PhpArray
         return $services;
 
     }
-
 
     /**
      * @param $routeKey
@@ -158,8 +156,12 @@ class PhpArray
         foreach ($zfRest as $sectionKey => $sectionConfig) {
             $isVersionOfController = $this->isVersionOfController($controller, $sectionKey);
             if ($isVersionOfController) {
-                $entities[] = $sectionConfig['entity_class'];
-                $collections[] = $sectionConfig['collection_class'];
+                if (!empty($sectionConfig['entity_class'])) {
+                    $entities[] = $sectionConfig['entity_class'];
+                }
+                if (!empty($sectionConfig['collection_class'])) {
+                    $collections[] = $sectionConfig['collection_class'];
+                }
                 $serviceNames[] = $sectionConfig['service_name'];
                 $controllers[] = $sectionKey;
                 $services[$routeKey]['zf-rest'][$sectionKey] = $sectionConfig;
